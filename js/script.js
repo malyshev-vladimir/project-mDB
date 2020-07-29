@@ -19,13 +19,17 @@ const movieDB = {
         "Логан",
         "Лига справедливости",
         "Ла-ла лэнд",
-        "Одержимость",
+        "Одержимость", 
         "Скотт Пилигрим против..."
     ]
 };
 
 const adv = document.querySelectorAll('.promo__adv img'),
-      movieList = document.querySelector('.promo__interactive-list');
+      movieList = document.querySelector('.promo__interactive-list'),
+      addForm = document.querySelector('form.add'),
+      addInput = addForm.querySelector('.adding__input'),
+      checkbox = addForm.querySelector('[type="checkbox"]');
+
 
 const deleteAdd = (arr) => {
     arr.forEach(item => {
@@ -56,22 +60,33 @@ sortArr(movieDB.movies);
 // Новый фильм должен добавляться в movieDB.movies.
 // Для получения доступа к значению input - обращаемся к нему как input.value;
 // P.S. Здесь есть несколько вариантов решения задачи, принимается любой, но рабочий.
-
-const addForm = document.querySelector('form.add'),
-      addInput = addForm.querySelector('.adding__input'),
-      checkbox = addForm.querySelector('[type="checkbox"]');
-
+// 2) Если название фильма больше, чем 21 символ - обрезать его и добавить три точки
+// 3) При клике на мусорную корзину - элемент будет удаляться из списка (сложно)
+// 4) Если в форме стоит галочка "Сделать любимым" - в консоль вывести сообщение: 
+// "Добавляем любимый фильм"
+// 5) Фильмы должны быть отсортированы по алфавиту
 
 addForm.addEventListener('submit', (event) => {
     event.preventDefault();
-    const newFilm = addInput.value,
+
+    let newFilm = addInput.value,
           favorite = checkbox.checked;  
     
-    movieDB.movies.push(newFilm);
+    if (newFilm) {
+        if (newFilm.length > 21) {
+            newFilm = `${newFilm.substring(0,22)} ...`;
+        }
 
-    sortArr(movieDB.movies);
-    
-    createMovieList(movieDB.movies, movieList);
+        if (favorite) {
+            console.log('Добавляем любимый фильм');
+        }
+
+        movieDB.movies.push(newFilm);
+
+        sortArr(movieDB.movies);
+
+        createMovieList(movieDB.movies, movieList);
+    };
 
     event.target.reset();
 });
@@ -79,33 +94,25 @@ addForm.addEventListener('submit', (event) => {
 function createMovieList(films, parent) {
     parent.innerHTML = "";
 
-    movieDB.movies.sort();
-
+    sortArr(films);
 
     films.forEach((film, i) => {
-        parent.innerHTML += `
+        parent.innerHTML += `      
             <li class="promo__interactive-item">${i + 1}. ${film}
                 <div class="delete"></div>
             </li>
         `;
     });
 
-    createMovieList(movieDB.movies, movieList);
+    document.querySelectorAll('.delete').forEach((btn, i) => {
+        btn.addEventListener('click', () => {
+            btn.parentElement.remove();
+            films.splice(i, 1);
+            createMovieList(films, parent);
+        });
+    });
 };
 
-// 2) Если название фильма больше, чем 21 символ - обрезать его и добавить три точки
-
-
-
-// 3) При клике на мусорную корзину - элемент будет удаляться из списка (сложно)
-
-
-
-// 4) Если в форме стоит галочка "Сделать любимым" - в консоль вывести сообщение: 
-// "Добавляем любимый фильм"
-
-
-
-// 5) Фильмы должны быть отсортированы по алфавиту
+createMovieList(movieDB.movies, movieList);
 
 
