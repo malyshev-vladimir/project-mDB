@@ -58,7 +58,7 @@ sortArr(movieDB.movies);
 // P.S. Здесь есть несколько вариантов решения задачи, принимается любой, но рабочий.
 
 const addForm = document.querySelector('form.add'),
-      addUnput = addForm.querySelector('.adding__input'),
+      addInput = addForm.querySelector('.adding__input'),
       checkbox = addForm.querySelector('[type="checkbox"]');
 
 
